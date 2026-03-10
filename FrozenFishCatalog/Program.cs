@@ -8,9 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Configure PostgreSQL
+// Configure PostgreSQL — prefer DATABASE_URL env var (Heroku), fall back to appsettings
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(databaseUrl));
 
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
