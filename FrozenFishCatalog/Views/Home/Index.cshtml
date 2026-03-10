@@ -1,0 +1,131 @@
+@model FrozenFishCatalog.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Inicio";
+    Layout = "_Layout";
+}
+
+<!-- Banner Principal -->
+<div class="hero-banner">
+    <div class="container">
+        <div class="hero-content">
+            <p class="company-since">Desde 1995 en la Región de Aysén</p>
+            <h1>Pescados y Mariscos<br/>de la <span>Patagonia Chilena</span></h1>
+            <p>Somos una empresa dedicada a la captura, procesamiento y comercialización de productos del mar de la más alta calidad. Nuestros pescados son capturados en las frías y cristalinas aguas de la Patagonia.</p>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-hero">
+                VER PRODUCTOS
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Por qué Elegirnos -->
+<section class="why-choose-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>¿Por qué elegirnos?</h2>
+            <p>Comprometidos con la calidad y la sustentabilidad</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-lg">
+                <div class="why-choose-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-globe-americas"></i>
+                    </div>
+                    <h5>Pesca Sustentable</h5>
+                    <p>Comprometidos con el medio ambiente y la preservación de los recursos marinos.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg">
+                <div class="why-choose-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-water"></i>
+                    </div>
+                    <h5>Captura Salvaje</h5>
+                    <p>Pescados capturados en su hábitat natural, en las aguas de la Patagonia.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg">
+                <div class="why-choose-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-snow3"></i>
+                    </div>
+                    <h5>Congelado a Bordo</h5>
+                    <p>Proceso de congelación inmediato para preservar la máxima frescura.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg">
+                <div class="why-choose-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <h5>Empaque Individual</h5>
+                    <p>Cada pieza empacada individualmente para mayor conveniencia.</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg">
+                <div class="why-choose-item">
+                    <div class="icon-circle">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5>Máxima Higiene</h5>
+                    <p>Cumplimos con los más altos estándares de calidad e higiene.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sección de Productos -->
+<section class="products-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Nuestros Productos</h2>
+            <p>Descubre nuestra selección de pescados y mariscos de primera calidad</p>
+        </div>
+
+        <!-- Pestañas de Categorías -->
+        <div class="category-tabs">
+            <a href="#" class="category-tab active" data-category="all">Todos</a>
+            @foreach (var category in Model.Categories)
+            {
+                <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.Id" class="category-tab">@category.Name</a>
+            }
+        </div>
+
+        <!-- Grilla de Productos -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var product in Model.FeaturedProducts.Take(8))
+            {
+                var minWeight = product.Weights.OrderBy(w => w.Price).FirstOrDefault();
+                <div class="col">
+                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none">
+                        <div class="product-card">
+                            <div class="product-image">
+                                <div class="placeholder-icon">
+                                    <i class="bi bi-water"></i>
+                                </div>
+                                <div class="product-badge">Premium</div>
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">@product.Name</div>
+                                <div class="product-description">@product.Description.Substring(0, Math.Min(80, product.Description.Length))...</div>
+                                <div class="product-price">
+                                    <span class="price-current">$@(minWeight?.Price.ToString("N0") ?? "0")</span>
+                                    <span class="price-unit">/ kg</span>
+                                </div>
+                                <span class="btn-more-info">Más Info</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+
+        <!-- Botón Ver Todos -->
+        <div class="text-center mt-5">
+            <a asp-controller="Products" asp-action="Index" class="btn btn-primary-red btn-lg px-5">
+                VER TODOS LOS PRODUCTOS
+            </a>
+        </div>
+    </div>
+</section>

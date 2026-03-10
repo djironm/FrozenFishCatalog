@@ -1,0 +1,82 @@
+@model FrozenFishCatalog.Models.Order
+@{
+    ViewData["Title"] = "Confirmación de Pedido";
+}
+
+<div class="container py-4">
+    <div class="text-center mb-5">
+        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 120px; height: 120px;">
+            <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+        </div>
+        <h1 class="display-6" style="color: var(--text-dark);">¡Gracias por tu Pedido!</h1>
+        <p class="lead text-muted">Tu pedido ha sido realizado exitosamente.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header py-3" style="background-color: var(--text-dark); color: white;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Pedido #@Model.Id</h5>
+                        <span class="badge" style="background-color: var(--primary-red); color: white;">@Model.Status</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-2">Fecha del Pedido</h6>
+                            <p class="mb-0">@Model.OrderDate.ToString("dd MMMM yyyy, HH:mm")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-2">ID de Transacción</h6>
+                            <p class="mb-0 font-monospace">@Model.PaymentTransactionId</p>
+                        </div>
+                    </div>
+
+                    <h6 class="text-muted mb-2">Dirección de Envío</h6>
+                    <p class="mb-4">
+                        @Model.ShippingAddress<br />
+                        @Model.City, @Model.PostalCode<br />
+                        @Model.Country
+                    </p>
+
+                    <h6 class="text-muted mb-3">Artículos del Pedido</h6>
+                    <table class="table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-end">Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.ProductWeight.Product.Name
+                                        <small class="text-muted">(@item.ProductWeight.WeightKg kg)</small>
+                                    </td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end">$@((item.UnitPrice * item.Quantity).ToString("F2"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-end fw-bold">Total:</td>
+                                <td class="text-end fw-bold" style="color: var(--primary-red);">$@Model.TotalAmount.ToString("F2")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a asp-controller="Products" asp-action="Index" class="btn btn-primary-red btn-lg">
+                    <i class="bi bi-grid me-2"></i>SEGUIR COMPRANDO
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

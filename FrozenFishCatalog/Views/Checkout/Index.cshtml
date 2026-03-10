@@ -1,0 +1,130 @@
+@model FrozenFishCatalog.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Pagar";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4" style="color: var(--text-dark);"><i class="bi bi-credit-card me-2"></i>Pagar</h1>
+
+    <form asp-action="Process" method="post">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header py-3" style="background-color: var(--text-dark); color: white;">
+                        <h5 class="mb-0"><i class="bi bi-geo-alt me-2"></i>Dirección de Envío</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="ShippingAddress" class="form-label">Dirección</label>
+                            <input asp-for="ShippingAddress" class="form-control" placeholder="Calle Principal 123, Depto 4B" />
+                            <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="City" class="form-label">Ciudad</label>
+                                <input asp-for="City" class="form-control" placeholder="Puerto Cisnes" />
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="PostalCode" class="form-label">Código Postal</label>
+                                <input asp-for="PostalCode" class="form-control" placeholder="6000000" />
+                                <span asp-validation-for="PostalCode" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Country" class="form-label">País</label>
+                                <input asp-for="Country" class="form-control" placeholder="Chile" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header py-3" style="background-color: var(--text-dark); color: white;">
+                        <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Información de Pago</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert mb-4" style="background-color: rgba(238, 46, 53, 0.1); border-color: var(--primary-red); color: var(--text-dark);">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Modo Demo:</strong> Este es un sistema de pago simulado. Usa cualquier formato de tarjeta válido para probar.
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CardholderName" class="form-label">Nombre del Titular</label>
+                            <input asp-for="CardholderName" class="form-control" placeholder="Juan Pérez" />
+                            <span asp-validation-for="CardholderName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="CardNumber" class="form-label">Número de Tarjeta</label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background-color: var(--text-dark); color: white;"><i class="bi bi-credit-card-2-front"></i></span>
+                                <input asp-for="CardNumber" class="form-control" placeholder="4111 1111 1111 1111" />
+                            </div>
+                            <span asp-validation-for="CardNumber" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ExpiryDate" class="form-label">Fecha de Vencimiento</label>
+                                <input asp-for="ExpiryDate" class="form-control" placeholder="MM/AA" />
+                                <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Cvv" class="form-label">CVV</label>
+                                <input asp-for="Cvv" class="form-control" placeholder="123" maxlength="4" />
+                                <span asp-validation-for="Cvv" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="order-summary p-4">
+                    <h5 class="fw-bold mb-4">Resumen del Pedido</h5>
+                    @foreach (var item in Model.Cart.Items)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <div>
+                                <span>@item.ProductName</span>
+                                <small class="d-block" style="color: rgba(255,255,255,0.6);">@item.WeightKg kg x @item.Quantity</small>
+                            </div>
+                            <span>$@item.Subtotal.ToString("F2")</span>
+                        </div>
+                    }
+                    <hr style="border-color: rgba(255,255,255,0.2);" />
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span>$@Model.Cart.TotalPrice.ToString("F2")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Envío</span>
+                        <span style="color: var(--primary-red);">GRATIS</span>
+                    </div>
+                    <hr style="border-color: rgba(255,255,255,0.2);" />
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold fs-5">Total</span>
+                        <span class="fw-bold fs-5" style="color: var(--primary-red);">$@Model.Cart.TotalPrice.ToString("F2")</span>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-lg">
+                            <i class="bi bi-lock me-2"></i>REALIZAR PEDIDO
+                        </button>
+                    </div>
+                    <div class="text-center mt-3">
+                        <small style="color: rgba(255,255,255,0.6);">
+                            <i class="bi bi-shield-check me-1"></i>Encriptación SSL de 256-bit
+                        </small>
+                    </div>
+                </div>
+
+                <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary w-100 mt-3">
+                    <i class="bi bi-arrow-left me-2"></i>Volver al Carro
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
