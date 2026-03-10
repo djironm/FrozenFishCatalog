@@ -1,1 +1,1 @@
-web: cd FrozenFishCatalog && dotnet run --urls http://+:$PORT
+web: dotnet FrozenFishCatalog/bin/Release/net9.0/publish/FrozenFishCatalog.dll --urls http://+:$PORT
