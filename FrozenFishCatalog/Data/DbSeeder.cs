@@ -1,4 +1,6 @@
 using FrozenFishCatalog.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FrozenFishCatalog.Data;
 
@@ -61,6 +63,43 @@ public static class DbSeeder
 
         context.ProductWeights.AddRange(productWeights);
         context.SaveChanges();
+    }
+
+    public static async Task SeedAdminAsync(IServiceProvider serviceProvider)
+    {
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+
+        if (!await roleManager.RoleExistsAsync("Admin"))
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+
+        const string adminEmail = "admin@pescacisne.cl";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+        if (adminUser == null)
+        {
+            adminUser = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                FirstName = "Admin",
+                LastName = "Pesca Cisne",
+                EmailConfirmed = true
+            };
+            await userManager.CreateAsync(adminUser, "Admin123!");
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+
+        if (!context.PaymentTypes.Any())
+        {
+            context.PaymentTypes.AddRange(
+                new PaymentType { Name = "Tarjeta de Crédito", Description = "Visa, Mastercard, American Express", Icon = "bi-credit-card", IsActive = true, DisplayOrder = 1 },
+                new PaymentType { Name = "Tarjeta de Débito", Description = "Débito bancario directo", Icon = "bi-credit-card-2-front", IsActive = true, DisplayOrder = 2 },
+                new PaymentType { Name = "Transferencia Bancaria", Description = "Transferencia directa a cuenta bancaria", Icon = "bi-bank", IsActive = true, DisplayOrder = 3 },
+                new PaymentType { Name = "Efectivo contra entrega", Description = "Pago en efectivo al momento de la entrega", Icon = "bi-cash", IsActive = false, DisplayOrder = 4 }
+            );
+            await context.SaveChangesAsync();
+        }
     }
 
     private static decimal GetBasePrice(string productName) => productName switch

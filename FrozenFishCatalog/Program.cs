@@ -55,6 +55,7 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     context.Database.Migrate();
     DbSeeder.Seed(context);
+    await DbSeeder.SeedAdminAsync(scope.ServiceProvider);
 }
 
 // Configure the HTTP request pipeline.
@@ -69,6 +70,10 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

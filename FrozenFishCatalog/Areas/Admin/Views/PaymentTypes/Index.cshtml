@@ -1,0 +1,58 @@
+@model List<FrozenFishCatalog.Models.PaymentType>
+
+<div class="admin-page-header">
+    <h2><i class="bi bi-credit-card me-2"></i>Métodos de Pago</h2>
+    <a asp-area="Admin" asp-controller="PaymentTypes" asp-action="Create" class="btn btn-admin-primary">
+        <i class="bi bi-plus-lg me-1"></i>Nuevo Método
+    </a>
+</div>
+
+<div class="admin-card">
+    <div class="card-body">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Icono</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Orden</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pt in Model)
+                {
+                    <tr>
+                        <td><i class="bi @pt.Icon fs-4 text-secondary"></i></td>
+                        <td><strong>@pt.Name</strong></td>
+                        <td class="text-muted">@pt.Description</td>
+                        <td>@pt.DisplayOrder</td>
+                        <td>
+                            <form asp-area="Admin" asp-controller="PaymentTypes" asp-action="Toggle"
+                                  asp-route-id="@pt.Id" method="post" class="d-inline">
+                                <button type="submit"
+                                        class="btn btn-sm @(pt.IsActive ? "btn-success" : "btn-outline-secondary") btn-action">
+                                    @(pt.IsActive ? "Activo" : "Inactivo")
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            <a asp-area="Admin" asp-controller="PaymentTypes" asp-action="Edit"
+                               asp-route-id="@pt.Id" class="btn btn-sm btn-outline-primary btn-action me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form asp-area="Admin" asp-controller="PaymentTypes" asp-action="Delete"
+                                  asp-route-id="@pt.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('¿Eliminar «@pt.Name»?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-action">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

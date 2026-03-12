@@ -1,0 +1,89 @@
+@model FrozenFishCatalog.ViewModels.AdminProductFormViewModel
+
+<div class="admin-page-header">
+    <h2><i class="bi bi-plus-circle me-2"></i>Nuevo Producto</h2>
+    <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Volver
+    </a>
+</div>
+
+<form asp-action="Create" method="post" class="admin-form">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="admin-card mb-4">
+                <div class="card-header"><h5>Información del Producto</h5></div>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Ej: Filete de Salmón Noruego">
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"
+                                  placeholder="Descripción detallada del producto..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ShippingTerms" class="form-label"></label>
+                        <input asp-for="ShippingTerms" class="form-control"
+                               placeholder="Ej: Envío refrigerado. Entrega en 24-48h.">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label asp-for="ImageUrl" class="form-label"></label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="/images/products/salmon.jpg">
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CategoryId" class="form-label"></label>
+                            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
+                                <option value="">— Seleccionar —</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="card-header"><h5>Variantes de Precio por Peso</h5></div>
+                <div class="card-body p-4">
+                    <div class="weights-grid">
+                        @foreach (var (label, priceProp, stockProp, priceVal, stockVal) in new[]{
+                            ("1 kg", "Price1kg", "Stock1kg", Model.Price1kg, Model.Stock1kg),
+                            ("2 kg", "Price2kg", "Stock2kg", Model.Price2kg, Model.Stock2kg),
+                            ("3 kg", "Price3kg", "Stock3kg", Model.Price3kg, Model.Stock3kg)
+                        })
+                        {
+                            <div class="weight-card">
+                                <h6><i class="bi bi-box me-1"></i>@label</h6>
+                                <div class="mb-2">
+                                    <label class="form-label">Precio ($)</label>
+                                    <input type="number" name="@priceProp" value="@priceVal"
+                                           class="form-control" step="0.01" min="0.01" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Stock (unidades)</label>
+                                    <input type="number" name="@stockProp" value="@stockVal"
+                                           class="form-control" step="1" min="0" required>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="admin-card">
+                <div class="card-header"><h5>Acciones</h5></div>
+                <div class="card-body p-4 d-grid gap-2">
+                    <button type="submit" class="btn btn-admin-primary">
+                        <i class="bi bi-check-lg me-1"></i>Crear Producto
+                    </button>
+                    <a asp-area="Admin" asp-controller="Products" asp-action="Index"
+                       class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

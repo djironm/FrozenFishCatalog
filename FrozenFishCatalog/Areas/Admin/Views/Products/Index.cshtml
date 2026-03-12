@@ -1,0 +1,84 @@
+@model List<FrozenFishCatalog.Models.Product>
+
+<div class="admin-page-header">
+    <h2><i class="bi bi-box-seam me-2"></i>Productos</h2>
+    <a asp-area="Admin" asp-controller="Products" asp-action="Create" class="btn btn-admin-primary">
+        <i class="bi bi-plus-lg me-1"></i>Nuevo Producto
+    </a>
+</div>
+
+<div class="admin-card">
+    <div class="card-body">
+        @if (!Model.Any())
+        {
+            <p class="text-muted text-center py-4">No hay productos registrados.</p>
+        }
+        else
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>1 kg</th>
+                        <th>2 kg</th>
+                        <th>3 kg</th>
+                        <th>Stock total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        var w1 = p.Weights.FirstOrDefault(w => w.WeightKg == 1);
+                        var w2 = p.Weights.FirstOrDefault(w => w.WeightKg == 2);
+                        var w3 = p.Weights.FirstOrDefault(w => w.WeightKg == 3);
+                        var totalStock = p.Weights.Sum(w => w.StockQuantity);
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(p.ImageUrl))
+                                {
+                                    <img src="@p.ImageUrl" alt="@p.Name" class="img-preview" onerror="this.style.display='none'">
+                                }
+                                else
+                                {
+                                    <div class="img-preview d-flex align-items-center justify-content-center bg-light text-muted">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <strong>@p.Name</strong>
+                                @if (!string.IsNullOrEmpty(p.ShippingTerms))
+                                {
+                                    <br><small class="text-muted">@p.ShippingTerms</small>
+                                }
+                            </td>
+                            <td><span class="badge bg-light text-dark border">@p.Category?.Name</span></td>
+                            <td>@(w1 != null ? "$" + w1.Price.ToString("N2") : "—")</td>
+                            <td>@(w2 != null ? "$" + w2.Price.ToString("N2") : "—")</td>
+                            <td>@(w3 != null ? "$" + w3.Price.ToString("N2") : "—")</td>
+                            <td class="@(totalStock < 10 ? "stock-low" : totalStock < 30 ? "stock-medium" : "stock-ok")">
+                                @totalStock
+                            </td>
+                            <td>
+                                <a asp-area="Admin" asp-controller="Products" asp-action="Edit" asp-route-id="@p.Id"
+                                   class="btn btn-sm btn-outline-primary btn-action me-1">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-area="Admin" asp-controller="Products" asp-action="Delete" asp-route-id="@p.Id"
+                                      method="post" class="d-inline"
+                                      onsubmit="return confirm('¿Eliminar el producto «@p.Name»? Esta acción no se puede deshacer.')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-action">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

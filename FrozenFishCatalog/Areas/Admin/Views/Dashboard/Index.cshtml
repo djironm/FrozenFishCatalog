@@ -1,0 +1,97 @@
+@model FrozenFishCatalog.ViewModels.AdminDashboardViewModel
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon red"><i class="bi bi-receipt"></i></div>
+            <div class="stat-info">
+                <h3>@Model.TotalOrders</h3>
+                <p>Total Pedidos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="bi bi-hourglass-split"></i></div>
+            <div class="stat-info">
+                <h3>@Model.PendingOrders</h3>
+                <p>Pendientes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="bi bi-currency-dollar"></i></div>
+            <div class="stat-info">
+                <h3>$@Model.TotalRevenue.ToString("N0")</h3>
+                <p>Ingresos totales</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="bi bi-box-seam"></i></div>
+            <div class="stat-info">
+                <h3>@Model.TotalProducts</h3>
+                <p>Productos activos</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.LowStockCount > 0)
+{
+    <div class="alert alert-warning d-flex align-items-center gap-2 mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span><strong>@Model.LowStockCount</strong> variante(s) con stock bajo (menos de 10 unidades).</span>
+        <a asp-area="Admin" asp-controller="Inventory" asp-action="Index" class="ms-auto alert-link">Ver inventario →</a>
+    </div>
+}
+
+<div class="admin-card">
+    <div class="card-header">
+        <h5><i class="bi bi-clock-history me-2"></i>Pedidos Recientes</h5>
+        <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-sm btn-outline-secondary">Ver todos</a>
+    </div>
+    <div class="card-body">
+        @if (!Model.RecentOrders.Any())
+        {
+            <p class="text-muted text-center py-4">No hay pedidos aún.</p>
+        }
+        else
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model.RecentOrders)
+                    {
+                        <tr>
+                            <td><strong>#@order.Id</strong></td>
+                            <td>@order.User?.Email</td>
+                            <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@order.Items.Sum(i => i.Quantity)</td>
+                            <td><strong>$@order.TotalAmount.ToString("N2")</strong></td>
+                            <td>
+                                <span class="status-badge status-@order.Status">@order.Status</span>
+                            </td>
+                            <td>
+                                <a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id"
+                                   class="btn btn-sm btn-outline-primary btn-action">Ver</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

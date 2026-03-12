@@ -1,0 +1,114 @@
+@model FrozenFishCatalog.ViewModels.AdminProductFormViewModel
+
+<div class="admin-page-header">
+    <h2><i class="bi bi-pencil-square me-2"></i>Editar Producto</h2>
+    <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Volver
+    </a>
+</div>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="admin-form">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Weight1kgId" />
+    <input type="hidden" asp-for="Weight2kgId" />
+    <input type="hidden" asp-for="Weight3kgId" />
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="admin-card mb-4">
+                <div class="card-header"><h5>Información del Producto</h5></div>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control">
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ShippingTerms" class="form-label"></label>
+                        <input asp-for="ShippingTerms" class="form-control">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label asp-for="ImageUrl" class="form-label"></label>
+                            <input asp-for="ImageUrl" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CategoryId" class="form-label"></label>
+                            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select"></select>
+                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="card-header"><h5>Variantes de Precio por Peso</h5></div>
+                <div class="card-body p-4">
+                    <div class="weights-grid">
+                        <div class="weight-card">
+                            <h6><i class="bi bi-box me-1"></i>1 kg</h6>
+                            <div class="mb-2">
+                                <label class="form-label">Precio ($)</label>
+                                <input asp-for="Price1kg" type="number" class="form-control" step="0.01" min="0.01">
+                            </div>
+                            <div>
+                                <label class="form-label">Stock</label>
+                                <input asp-for="Stock1kg" type="number" class="form-control" step="1" min="0">
+                            </div>
+                        </div>
+                        <div class="weight-card">
+                            <h6><i class="bi bi-box me-1"></i>2 kg</h6>
+                            <div class="mb-2">
+                                <label class="form-label">Precio ($)</label>
+                                <input asp-for="Price2kg" type="number" class="form-control" step="0.01" min="0.01">
+                            </div>
+                            <div>
+                                <label class="form-label">Stock</label>
+                                <input asp-for="Stock2kg" type="number" class="form-control" step="1" min="0">
+                            </div>
+                        </div>
+                        <div class="weight-card">
+                            <h6><i class="bi bi-box me-1"></i>3 kg</h6>
+                            <div class="mb-2">
+                                <label class="form-label">Precio ($)</label>
+                                <input asp-for="Price3kg" type="number" class="form-control" step="0.01" min="0.01">
+                            </div>
+                            <div>
+                                <label class="form-label">Stock</label>
+                                <input asp-for="Stock3kg" type="number" class="form-control" step="1" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="admin-card">
+                <div class="card-header"><h5>Acciones</h5></div>
+                <div class="card-body p-4 d-grid gap-2">
+                    <button type="submit" class="btn btn-admin-primary">
+                        <i class="bi bi-check-lg me-1"></i>Guardar Cambios
+                    </button>
+                    <a asp-area="Admin" asp-controller="Products" asp-action="Index"
+                       class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="admin-card mt-3">
+                    <div class="card-header"><h5>Vista previa imagen</h5></div>
+                    <div class="card-body p-4 text-center">
+                        <img src="@Model.ImageUrl" alt="@Model.Name"
+                             class="img-fluid rounded" style="max-height:180px; object-fit:cover;"
+                             onerror="this.style.display='none'">
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</form>
